@@ -12,7 +12,11 @@ interface Item {
 const InventoryPage = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newItem, setNewItem] = useState({ name: "", description: "", quantity: 1 });
+  const [newItem, setNewItem] = useState({
+    name: "",
+    description: "",
+    quantity: 1,
+  });
 
   useEffect(() => {
     fetchItems();
@@ -30,16 +34,25 @@ const InventoryPage = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setNewItem({ ...newItem, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found, user might not be logged in");
+      return;
+    }
+
     try {
-      await createItem(newItem, "your-auth-token"); // Replace with actual auth token
-      setNewItem({ name: "", description: "", quantity: 1 }); // Reset form
-      fetchItems(); // Refresh the list
+      await createItem(newItem, token);
+      setNewItem({ name: "", description: "", quantity: 1 });
+      fetchItems();
     } catch (error) {
       console.error("Error adding item:", error);
     }
