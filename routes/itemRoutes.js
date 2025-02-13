@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require("../middleware/authMiddleware");
 const Item = require("../models/Item");
 
-//CREATE a new item (Protected Route)
+// CREATE a new item (Protected Route)
 router.post("/", auth, async (req, res) => {
   const { name, description, quantity } = req.body;
 
@@ -16,8 +16,9 @@ router.post("/", auth, async (req, res) => {
       name,
       description,
       quantity,
-      user: req.user.id,
+      user: req.user.id, // Assign item to the user creating it
     });
+
     const item = await newItem.save();
     res.json(item);
   } catch (error) {
@@ -26,11 +27,11 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-//GET all items (Public Route)
+// GET all items (Public Route with Pagination)
 router.get("/", async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // Default to page 1
-    const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+    const page = parseInt(req.query.page) || 1; // Default page 1
+    const limit = parseInt(req.query.limit) || 10; // Default 10 items per page
     const skip = (page - 1) * limit;
 
     const items = await Item.find().skip(skip).limit(limit);
@@ -48,7 +49,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-//GET a single item by ID
+// GET a single item by ID (Public)
 router.get("/:id", async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
@@ -61,8 +62,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//UPDATE an Item
-router.get("/:id", async (req, res) => {
+// UPDATE an Item (Protected Route)
+router.put("/:id", auth, async (req, res) => {
   const { name, description, quantity } = req.body;
 
   try {
@@ -74,6 +75,7 @@ router.get("/:id", async (req, res) => {
       return res.status(401).json({ msg: "Not authorized" });
     }
 
+    // Update item fields
     item.name = name || item.name;
     item.description = description || item.description;
     item.quantity = quantity || item.quantity;
@@ -86,7 +88,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//Delete an item
+// DELETE an item (Protected Route)
 router.delete("/:id", auth, async (req, res) => {
   try {
     let item = await Item.findById(req.params.id);
