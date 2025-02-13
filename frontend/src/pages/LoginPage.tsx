@@ -1,7 +1,10 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api/auth"; // API call function
+import { loginUser } from "../api/auth";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -16,45 +19,50 @@ const LoginPage = () => {
 
     try {
       const userData = await loginUser(email, password);
-      localStorage.setItem("token", userData.token); // Store token in localStorage
+      localStorage.setItem("token", userData.token);
       authContext?.login(userData);
       navigate("/inventory");
     } catch (error) {
       console.error("Login Failed", error);
+      setError("Invalid email or password.");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
-      {error && <p className="text-red-500">{error}</p>}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2"
-          required
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2">
-          Login
-        </button>
-      </form>
-      <p className="mt-4">
-        Don't have an account?{" "}
-        <a href="/signup" className="text-blue-500">
-          Sign Up
-        </a>
-      </p>
+    <div className="flex items-center justify-center h-screen">
+      <Card className="w-full max-w-md p-6 shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-center text-2xl font-bold">Login</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <Button type="submit" className="w-full">
+              Login
+            </Button>
+          </form>
+          <p className="text-sm text-muted-foreground text-center mt-4">
+            Don't have an account?{" "}
+            <a href="/signup" className="text-primary hover:underline">
+              Sign Up
+            </a>
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 };

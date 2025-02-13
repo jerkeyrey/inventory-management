@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { getItems, createItem } from "../api/items";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import { Button } from "../components/ui/button";
+import { ClimbingBoxLoader } from "react-spinners";  
 
-// Define the expected item structure
 interface Item {
   _id: string;
   name: string;
@@ -59,53 +63,59 @@ const InventoryPage = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Inventory Items</h1>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <Card className="w-full max-w-md p-6 shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-center text-2xl font-bold">Inventory Items</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              type="text"
+              name="name"
+              placeholder="Item Name"
+              value={newItem.name}
+              onChange={handleInputChange}
+              required
+            />
+            <Input
+              type="number"
+              name="quantity"
+              placeholder="Quantity"
+              value={newItem.quantity}
+              onChange={handleInputChange}
+              required
+            />
+            <Textarea
+              name="description"
+              placeholder="Description (Optional)"
+              value={newItem.description}
+              onChange={handleInputChange}
+              className="resize-none"
+            />
+            <Button type="submit" className="w-full">
+              Add Item
+            </Button>
+          </form>
 
-      {/* Add Item Form */}
-      <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded">
-        <input
-          type="text"
-          name="name"
-          placeholder="Item Name"
-          value={newItem.name}
-          onChange={handleInputChange}
-          required
-          className="border p-2 mr-2"
-        />
-        <input
-          type="number"
-          name="quantity"
-          placeholder="Quantity"
-          value={newItem.quantity}
-          onChange={handleInputChange}
-          required
-          className="border p-2 mr-2"
-        />
-        <textarea
-          name="description"
-          placeholder="Description (Optional)"
-          value={newItem.description}
-          onChange={handleInputChange}
-          className="border p-2 mr-2"
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-          Add Item
-        </button>
-      </form>
-
-      {/* Item List */}
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <ul className="list-disc pl-6">
-          {items.map((item) => (
-            <li key={item._id}>
-              {item.name} - {item.quantity}
-            </li>
-          ))}
-        </ul>
-      )}
+          {/* Loading Spinner (Fallback) */}
+          {loading ? (
+            <div className="flex justify-center mt-6">
+              <ClimbingBoxLoader color="#3498db" loading={loading} size={15} />
+            </div>
+          ) : (
+            <div className="mt-6 space-y-4">
+              {items.map((item) => (
+                <Card key={item._id} className="p-4 shadow-md bg-white">
+                  <CardTitle className="font-semibold">{item.name}</CardTitle>
+                  <p>Quantity: {item.quantity}</p>
+                  {item.description && <p>Description: {item.description}</p>}
+                </Card>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
