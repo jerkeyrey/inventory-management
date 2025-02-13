@@ -11,6 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use("/api/auth", authRoutes);
 //Connect to MongoDB Atlas
 mongoose
 .connect(process.env.MONGO_URI, {
@@ -35,5 +36,3 @@ const PORT = process.env.PORT || 3500;
 app.listen(PORT, () => {
   console.log(`Server is running on Port: ${PORT}`);
 });
-
-app.use("/api/auth", authRoutes);
