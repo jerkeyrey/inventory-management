@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 const User = require("../models/User");
+const auth = require("../middleware/authMiddleware")
 
 const router = express.Router();
 
@@ -81,5 +82,17 @@ router.post("/login", async (req, res) => {
       res.status(500).send("Server error");
   }
 });
+
+// Protected Route: Get User Info
+router.get("/me", auth, async (req, res) => {
+  try {
+      const user = await User.findById(req.user.id).select("-password"); // Exclude password
+      res.json(user);
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+  }
+});
+
 
 module.exports = router;
