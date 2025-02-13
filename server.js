@@ -1,12 +1,29 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
+const authRoutes = require("./routes/auth");
+
+app.use("/api/auth", authRoutes);
 
 const app = express();
 
 //Middleware
 app.use(express.json());
 app.use(cors());
+
+//Connect to MongoDB Atlas
+mongoose
+  .connect(process.env.MONGO_URI, {
+    UseNewUrlParser: true,
+    UseUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("MongoDb connected successfully");
+  })
+  .catch((error) => {
+    console.log("MongoDb connection error: ", error);
+  });
 
 //Default Route
 app.get("/", (req, res) => {
