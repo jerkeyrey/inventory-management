@@ -28,18 +28,25 @@ router.post("/", auth, async (req, res) => {
 });
 
 // GET all items (Public Route with Pagination)
+// GET all items with Search and Pagination
 router.get("/", async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // Default page 1
-    const limit = parseInt(req.query.limit) || 10; // Default 10 items per page
+    const { page = 1, limit = 10, search } = req.query;
     const skip = (page - 1) * limit;
 
-    const items = await Item.find().skip(skip).limit(limit);
-    const total = await Item.countDocuments(); // Total items count
+    let query = {};
+
+    // If search query exists, filter by name (case-insensitive)
+    if (search) {
+      query.name = { $regex: search, $options: "i" };
+    }
+
+    const items = await Item.find(query).skip(skip).limit(parseInt(limit));
+    const total = await Item.countDocuments(query);
 
     res.json({
-      page,
-      limit,
+      page: parseInt(page),
+      limit: parseInt(limit),
       total,
       totalPages: Math.ceil(total / limit),
       items,
