@@ -29,11 +29,22 @@ router.post("/", auth, async (req, res) => {
 //GET all items (Public Route)
 router.get("/", async (req, res) => {
   try {
-    const items = await Item.find().sort({ createdAt: -1 });
-    res.json(items);
+    const page = parseInt(req.query.page) || 1; // Default to page 1
+    const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+    const skip = (page - 1) * limit;
+
+    const items = await Item.find().skip(skip).limit(limit);
+    const total = await Item.countDocuments(); // Total items count
+
+    res.json({
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+      items,
+    });
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -75,23 +86,23 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//Delete an item 
+//Delete an item
 router.delete("/:id", auth, async (req, res) => {
   try {
-      let item = await Item.findById(req.params.id);
-      if (!item) return res.status(404).json({ msg: "Item not found" });
+    let item = await Item.findById(req.params.id);
+    if (!item) return res.status(404).json({ msg: "Item not found" });
 
-      // Ensure the user deleting the item is the same user who created it
-      if (item.user.toString() !== req.user.id) {
-          return res.status(401).json({ msg: "Not authorized" });
-      }
+    // Ensure the user deleting the item is the same user who created it
+    if (item.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "Not authorized" });
+    }
 
-      await item.deleteOne();
-      res.json({ msg: "Item removed" });
+    await item.deleteOne();
+    res.json({ msg: "Item removed" });
   } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error");
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 });
 
-module.exports = router
+module.exports = router;
