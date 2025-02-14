@@ -1,0 +1,21 @@
+services:
+  backend:
+    build: ./inventory-management
+    ports:
+      - "4000:3500"
+    env_file:
+      - ./inventory-management/.env
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: dbPassword
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

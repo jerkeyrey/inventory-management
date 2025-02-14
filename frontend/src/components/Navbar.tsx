@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { Button } from "./ui/button"; // Importing from shadcn
-import { cn } from "../lib/utils.ts"; // Utility for class merging
+
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
