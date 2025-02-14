@@ -1,8 +1,13 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api/auth";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { loginUser, fetchUserDetails } from "../api/auth";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 
@@ -18,10 +23,14 @@ const LoginPage = () => {
     setError("");
 
     try {
-      const userData = await loginUser(email, password);
-      localStorage.setItem("token", userData.token);
-      authContext?.login(userData);
-      navigate("/inventory");
+      const { token } = await loginUser(email, password);
+      localStorage.setItem("token", token);
+
+      // Fetch user details using the token
+      const userDetails = await fetchUserDetails(token);
+      authContext?.login({ ...userDetails, token });
+
+      navigate("/"); // Redirect to homepage
     } catch (error) {
       console.error("Login Failed", error);
       setError("Invalid email or password.");
@@ -32,7 +41,9 @@ const LoginPage = () => {
     <div className="flex items-center justify-center h-screen">
       <Card className="w-full max-w-md p-6 shadow-lg">
         <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">Login</CardTitle>
+          <CardTitle className="text-center text-2xl font-bold">
+            Login
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}

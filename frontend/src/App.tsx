@@ -4,6 +4,7 @@ import InventoryPage from "./pages/InventoryPage";
 import Navbar from "./components/Navbar";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import Footer from "./components/Footer";
 import "./index.css";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
       </Routes>
+      <Footer />
     </div>
   );
 }

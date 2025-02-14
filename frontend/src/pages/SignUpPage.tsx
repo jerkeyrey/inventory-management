@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { signupUser } from "../api/auth";
+import { signUpUser, fetchUserDetails } from "../api/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -28,7 +28,7 @@ const SignUpPage = () => {
       const { name, email, password } = formData;
       const userData = await signupUser(name, email, password);
       authContext?.login(userData);
-      navigate("/inventory");
+      navigate("/");
     } catch (error) {
       console.error("Signup Failed", error);
       setError("Failed to create an account. Please try again.");

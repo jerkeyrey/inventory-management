@@ -1,12 +1,18 @@
-import { createContext, useState, ReactNode, useEffect, useContext } from "react";
+import {
+  createContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useContext,
+} from "react";
 import { useNavigate } from "react-router-dom";
 
 // Define User type
 interface User {
   id: string;
-  username: string;
+  name: string;
   email: string;
-  token?: string; // Add token support
+  token?: string;
 }
 
 interface AuthContextType {
@@ -24,20 +30,17 @@ export const AuthContext = createContext<AuthContextType>({
 
 // AuthProvider Component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  console.log("AuthProvider Mounted");
-  const navigate = useNavigate(); // For navigation
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(() => {
-    // Retrieve user data from localStorage on initial load
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  // Update localStorage whenever the user state changes
   useEffect(() => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
       if (user.token) {
-        localStorage.setItem("token", user.token); // Store token separately
+        localStorage.setItem("token", user.token);
       }
     } else {
       localStorage.removeItem("user");
@@ -45,17 +48,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
-  // Login function to set the user
   const login = (userData: User) => {
     setUser(userData);
   };
 
-  // Logout function to clear the user
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    navigate("/login"); // Redirect to login page after logout
+    navigate("/login");
   };
 
   return (

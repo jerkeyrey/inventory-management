@@ -12,7 +12,7 @@ const Navbar = () => {
     <nav className="bg-background border-b border-border p-4 flex justify-between items-center">
       <h1 className="text-xl font-bold">
         <Link to="/" className="text-primary hover:underline">
-          Inventory App
+          invmanager
         </Link>
       </h1>
 
@@ -26,8 +26,8 @@ const Navbar = () => {
 
         {user ? (
           <>
-            <span className="text-muted-foreground">
-              Welcome, {user.username} 👋
+            <span className="text-muted-foreground font-semibold">
+              {user.name} 
             </span>
             <Button variant="destructive" onClick={logout}>
               Logout
