@@ -7,7 +7,7 @@ import {
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { FaBoxOpen, FaPlusCircle } from "react-icons/fa"; // Importing icons
+import { FaBoxOpen } from "react-icons/fa"; // Importing icons
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export default function HomePage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-4xl">
+      <div className="grid grid-cols-1 sm:grid-cols-1 gap-6 w-full max-w-4xl">
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader className="flex items-center">
             <FaBoxOpen className="text-blue-600 text-3xl mr-3" />
@@ -44,30 +44,10 @@ export default function HomePage() {
               View, update, and track your inventory with ease.
             </p>
             <Button
-              className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-lg"
+              className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-md text-xl"
               onClick={() => navigate("/inventory")}
             >
               Go to Inventory
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <CardHeader className="flex items-center">
-            <FaPlusCircle className="text-blue-600 text-3xl mr-3" />
-            <CardTitle className="text-2xl font-semibold">
-              Add New Item
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-700 mb-4">
-              Quickly add new products and manage stock levels.
-            </p>
-            <Button
-              className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-lg"
-              onClick={() => navigate("/add-item")}
-            >
-              Add Item
             </Button>
           </CardContent>
         </Card>

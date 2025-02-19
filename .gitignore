@@ -1,0 +1,4 @@
+# Node modules
+node_modules/
+frontend/node_modules/
+inventory-management/node_modules/

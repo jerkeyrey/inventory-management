@@ -2,7 +2,12 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { getItems, createItem, updateItem, deleteItem } from "../api/items";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Button } from "../components/ui/button";
@@ -18,7 +23,11 @@ interface Item {
 const InventoryPage = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newItem, setNewItem] = useState({ name: "", description: "", quantity: 1 });
+  const [newItem, setNewItem] = useState({
+    name: "",
+    description: "",
+    quantity: 1,
+  });
   const [editItem, setEditItem] = useState<Item | null>(null);
 
   const authContext = useContext(AuthContext);
@@ -45,11 +54,15 @@ const InventoryPage = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setNewItem({ ...newItem, [e.target.name]: e.target.value });
   };
 
-  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleEditInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     if (!editItem) return;
     setEditItem({ ...editItem, [e.target.name]: e.target.value });
   };
@@ -99,15 +112,38 @@ const InventoryPage = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-6 py-10">
       <Card className="w-full max-w-4xl p-8 shadow-xl bg-white rounded-lg">
         <CardHeader>
-          <CardTitle className="text-center text-3xl font-bold">Inventory Management</CardTitle>
+          <CardTitle className="text-center text-3xl font-bold">
+            Inventory Management
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {/* Add Item Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input type="text" name="name" placeholder="Item Name" value={newItem.name} onChange={handleInputChange} required />
-            <Input type="number" name="quantity" placeholder="Quantity" value={newItem.quantity} onChange={handleInputChange} required />
-            <Textarea name="description" placeholder="Description (Optional)" value={newItem.description} onChange={handleInputChange} />
-            <Button type="submit" className="w-full py-3 text-lg">Add Item</Button>
+            <Input
+              type="text"
+              name="name"
+              placeholder="Item Name"
+              value={newItem.name}
+              onChange={handleInputChange}
+              required
+            />
+            <Input
+              type="number"
+              name="quantity"
+              placeholder="Quantity"
+              value={newItem.quantity}
+              onChange={handleInputChange}
+              required
+            />
+            <Textarea
+              name="description"
+              placeholder="Description (Optional)"
+              value={newItem.description}
+              onChange={handleInputChange}
+            />
+            <Button type="submit" className="w-full py-3 text-lg">
+              Add Item
+            </Button>
           </form>
 
           {/* Loading Spinner */}
@@ -118,27 +154,76 @@ const InventoryPage = () => {
           ) : (
             <div className="mt-8 space-y-6">
               {items.map((item) => (
-                <Card key={item._id} className="p-6 shadow-md bg-white rounded-lg border border-gray-300">
+                <Card
+                  key={item._id}
+                  className="p-6 shadow-md bg-white rounded-lg border border-gray-300"
+                >
                   {editItem && editItem._id === item._id ? (
                     // Edit Form
                     <form onSubmit={handleEditSubmit} className="space-y-4">
-                      <Input type="text" name="name" value={editItem.name} onChange={handleEditInputChange} />
-                      <Input type="number" name="quantity" value={editItem.quantity} onChange={handleEditInputChange} />
-                      <Textarea name="description" value={editItem.description} onChange={handleEditInputChange} />
+                      <Input
+                        type="text"
+                        name="name"
+                        value={editItem.name}
+                        onChange={handleEditInputChange}
+                      />
+                      <Input
+                        type="number"
+                        name="quantity"
+                        value={editItem.quantity}
+                        onChange={handleEditInputChange}
+                      />
+                      <Textarea
+                        name="description"
+                        value={editItem.description}
+                        onChange={handleEditInputChange}
+                      />
                       <div className="flex justify-end space-x-3">
-                        <Button type="submit" className="px-6 py-2 text-lg">Save</Button>
-                        <Button variant="outline" onClick={() => setEditItem(null)} className="px-6 py-2 text-lg">Cancel</Button>
+                        <Button type="submit" className="px-6 py-2 text-lg">
+                          Save
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => setEditItem(null)}
+                          className="px-6 py-2 text-lg"
+                        >
+                          Cancel
+                        </Button>
                       </div>
                     </form>
                   ) : (
                     // Normal Display
                     <>
-                      <CardTitle className="text-xl font-semibold">{item.name}</CardTitle>
+                      <CardTitle
+                        className="text-xl font-semibold truncate max-w-[250px]"
+                        title={item.name}
+                      >
+                        {item.name}
+                      </CardTitle>
                       <p className="text-gray-700">Quantity: {item.quantity}</p>
-                      {item.description && <p className="text-gray-600">{item.description}</p>}
+                      {item.description && (
+                        <p
+                          className="text-gray-600 truncate max-w-[300px] overflow-hidden text-ellipsis hover:whitespace-normal hover:bg-gray-100 p-2 rounded-md cursor-pointer"
+                          title={item.description}
+                        >
+                          {item.description}
+                        </p>
+                      )}
                       <div className="flex justify-end space-x-3 mt-4">
-                        <Button variant="outline" onClick={() => setEditItem(item)} className="px-6 py-2 text-lg">Edit</Button>
-                        <Button variant="destructive" onClick={() => handleDelete(item._id)} className="px-6 py-2 text-lg">Delete</Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => setEditItem(item)}
+                          className="px-6 py-2 text-lg"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={() => handleDelete(item._id)}
+                          className="px-6 py-2 text-lg"
+                        >
+                          Delete
+                        </Button>
                       </div>
                     </>
                   )}
